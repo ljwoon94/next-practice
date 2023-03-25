@@ -1,6 +1,15 @@
-import { getProduct, getProducts } from "@/service/product";
-import { Metadata } from "next";
+import { getProduct, getProducts } from "@/service/products";
+
 import { notFound } from "next/navigation";
+
+/**
+ * next는 기본적으로 SSG로 렌더링된다
+ * export const revalidate = false; 는 디폴트이다.
+ * export const revalidate = n; 를 사용하면
+ * ISR 방식으로 변경. n초마다 정적인 html파일을 렌더링 한다.
+ */
+export const revalidate = 3;
+
 
 type Props = {
     params: {
@@ -24,23 +33,23 @@ type Props = {
  * @param params 동적 라우팅시 파라미터
  * @returns 
  */
-export default function PantsPage({ params: {slug} }: Props) {
-    const product = getProduct(slug);
+export default async function ProductPage({ params: {slug} }: Props) {
+    const product = await getProduct(slug);
     if (!product) {
         notFound();
     }
-    return <h1>{product} 제품 설명 페이지</h1>
+    return <h1>{product.name} 제품 설명 페이지</h1>
 }
 
 /**
  * 동적 라우팅 시 미리 만들어둔 정적 SSG 방식을 사용하고프면
  * generateStaticsParams 사용
  */
-export function generateStaticsParams() {
+export async function generateStaticsParams() {
     // const products = ['pants', 'skirt'] // 미리 정적으로 만들고 싶은 경로는 여기에 선언
-    const products = getProducts();
+    const products = await getProducts();
     return products.map(product => ({
-        slug: product,
+        slug: product.id,
     }))
 
 }
