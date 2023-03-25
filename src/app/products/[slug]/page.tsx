@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
  * export const revalidate = false; 는 디폴트이다.
  * export const revalidate = n; 를 사용하면
  * ISR 방식으로 변경. n초마다 정적인 html파일을 렌더링 한다.
+ * export const revalidate = 0;은 SSR 새로고침할때마다 서버에서 렌더링함ㅋㅋ
  */
 export const revalidate = 3;
 
@@ -33,8 +34,10 @@ type Props = {
  * @param params 동적 라우팅시 파라미터
  * @returns 
  */
-export default async function ProductPage({ params: {slug} }: Props) {
+export default async function ProductPage({ params: { slug } }: Props) {
     const product = await getProduct(slug);
+
+
     if (!product) {
         notFound();
     }
@@ -45,14 +48,14 @@ export default async function ProductPage({ params: {slug} }: Props) {
  * 동적 라우팅 시 미리 만들어둔 정적 SSG 방식을 사용하고프면
  * generateStaticsParams 사용
  */
-export async function generateStaticsParams() {
-    // const products = ['pants', 'skirt'] // 미리 정적으로 만들고 싶은 경로는 여기에 선언
+export async function generateStaticParams() {
+    // 모든 제품의 페이지들을 미리 만들어 둘 수 있게 해줄거임 (SSG)
     const products = await getProducts();
-    return products.map(product => ({
+    return products.map((product) => ({
         slug: product.id,
-    }))
-
+    }));
 }
+
 
 /**
  * metadata는 header와 같은 역할을 한다.
