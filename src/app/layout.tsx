@@ -2,6 +2,17 @@ import Link from 'next/link'
 import './globals.css'
 import styles from './layout.module.css'
 import { Metadata } from 'next'
+import { Open_Sans } from 'next/font/google'
+import { Nanum_Gothic } from 'next/font/google'
+
+/**
+ * 폰트는 페이지보다 최상위 layout.tsx에 해두는게 낫다. 
+ */
+const snans = Open_Sans({ subsets: ['latin'] })
+// Nanum_Gothic variable font가 아니면 이렇게 설정
+const gothic = Nanum_Gothic({
+  weight:'700',subsets: ['latin']
+})
 
 /**
  * metadata는 header와 같은 역할을 한다.
@@ -28,10 +39,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={snans.className}>
       <body>
         <header className={styles.header}>
-          <h1>Demo Note</h1>
+          <h1 className={gothic.className}>Demo Note</h1>
           <nav className={styles.nav}>
             <Link href='/products'>Products</Link>
             <Link href='/about'>About</Link>

@@ -1,7 +1,8 @@
 import { getProducts } from "@/service/products"
 import Link from "next/link"
-import MeowArticle from "../components/MeowArticle";
-
+import MeowArticle from "../../components/MeowArticle";
+import clothesImage from '../../../public/images/clothes.jpg'
+import Image from "next/image";
 
 /***
  * 지금 이 페이지에는 적진 않았지만
@@ -24,6 +25,15 @@ export default async function ProductsPage(){
     // const factText = data.data[0]
     return <div>
         <h1>제품 소개 페이지!</h1>
+        {/* 
+            Image 태그 장점. next에서 자체적으로 이미지 효율화를 해준다.
+            이전 img 태그는 이미지가 불러오는 동안, 옆에 글자가 먼저 렌더링되면
+            이미지가 다 불러왔을 시, 글자가 옆으로 이동하게 되면서
+            (이를 레이아웃 쉬프팅이라 한다) 다시 렌더링된다. 
+            그러나 Image 태그 이런 상황도 방지해준다.
+            priority 사용시 최우선적으로 다운로드함.
+        */}
+        <Image src = { clothesImage } alt='Clothes' priority/>
         <ul>
         {/* 구조분해 할당 product를 {id,name}으로 할당 */}
         {products.map(({id,name}, i) => 

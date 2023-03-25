@@ -1,6 +1,8 @@
+import GoProductsButton from "@/components/GoProductsButton";
 import { getProduct, getProducts } from "@/service/products";
+import Image from "next/image";
 
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 /**
  * next는 기본적으로 SSG로 렌더링된다
@@ -37,11 +39,20 @@ type Props = {
 export default async function ProductPage({ params: { slug } }: Props) {
     const product = await getProduct(slug);
 
-
+    // 만약 제품이 없다면 products로 리다이렉트
     if (!product) {
-        notFound();
+        redirect('/products')
+        // notFound();
     }
-    return <h1>{product.name} 제품 설명 페이지</h1>
+    return <>
+        <h1>{product.name} 제품 설명 페이지</h1>
+        {/* Image 태그의 디폴트 경로가 public인듯 */}
+        <Image src = { `/images/${product.imagesPath}.jpg` } alt={product.name}
+         width='300'
+         height='300'
+         />
+        <GoProductsButton />
+    </>
 }
 
 /**
