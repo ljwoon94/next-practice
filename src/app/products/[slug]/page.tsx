@@ -1,3 +1,5 @@
+import { getProduct, getProducts } from "@/service/product";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -5,6 +7,7 @@ type Props = {
         slug: string;
     }
 }
+
 /**
  * 우선 products 까지는 정적 라우팅으로 정적 페이지로 만들어진다.
  * products안에 [slug] 혹은 [아무거나]로 하면 products/아무렇게 입력해도 라우팅이 된다.
@@ -17,24 +20,39 @@ type Props = {
  * [...slug] 사용 시 동적 라우팅을 몇 댑스 더 들어갈 수 있다. 
  * ex) /products/pants/trunk 등등
  * [[...slug]]일 경우 있을 수 도 없을 수도 있다.
+ * params: {slug} 는 javascript 구조분해 할당
  * @param params 동적 라우팅시 파라미터
  * @returns 
  */
-export default function PantsPage({params}: Props){
-    if(params.slug === 'nothing'){
+export default function PantsPage({ params: {slug} }: Props) {
+    const product = getProduct(slug);
+    if (!product) {
         notFound();
     }
-    return <h1>{params.slug} 제품 설명 페이지</h1>
+    return <h1>{product} 제품 설명 페이지</h1>
 }
 
 /**
  * 동적 라우팅 시 미리 만들어둔 정적 SSG 방식을 사용하고프면
  * generateStaticsParams 사용
  */
-export function generateStaticsParams(){
-    const products = ['pants', 'skirt'] // 미리 정적으로 만들고 싶은 경로는 여기에 선언
-    return products.map(product =>({
+export function generateStaticsParams() {
+    // const products = ['pants', 'skirt'] // 미리 정적으로 만들고 싶은 경로는 여기에 선언
+    const products = getProducts();
+    return products.map(product => ({
         slug: product,
     }))
 
+}
+
+/**
+ * metadata는 header와 같은 역할을 한다.
+ * layout.tsx에 정의해두면 자식 컴포넌트까지 영향을 주지만
+ * page.tsx에 정의해두면 이 페이지에만 영향을 준다.
+ * generateMetadata 사용 시 동적인 metadata(header)를 사용할 수 있다.
+ */
+export function generateMetadata({ params }: Props) {
+    return {
+        title: `제품의 이름: ${params.slug}`
+    }
 }

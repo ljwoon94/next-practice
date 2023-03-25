@@ -1,3 +1,4 @@
+import { getProducts } from "@/service/product"
 import Link from "next/link"
 
 /***
@@ -6,7 +7,7 @@ import Link from "next/link"
  * 라우팅 되지 않지만, 같은 그룹의 애들을 묶을때 사용한다. 
  */
 export default function ProductsPage(){
-    const products =['shirts','pants','skirt','shoes']
+    const products = getProducts();
     return <div>
         <h1>제품 소개 페이지!</h1>
         {products.map((product, i) => 
